@@ -5,323 +5,437 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bio Link | Baraboy 2k10</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0c1e; /* Màu nền tối */
-            --glass-bg: rgba(255, 255, 255, 0.03); /* Nền mờ */
-            --glass-border: rgba(255, 255, 255, 0.08); /* Viền mờ */
-            --text-main: #ffffff;
-            --text-muted: #b0b0b0;
-            --accent: #20c997; /* Màu xanh ngọc nổi bật */
-            --fb-color: #2b70ff; /* Xanh dương Facebook */
+            /* --- Chế độ Sáng (Light Mode - Mặc định) --- */
+            --md-sys-color-background: #f0f4f9; /* Nền xanh nhạt Google */
+            --md-sys-color-surface: #ffffff;
+            --md-sys-color-surface-container: #f3f6fc; 
+            --md-sys-color-on-surface: #1f1f1f; /* Text chính */
+            --md-sys-color-on-surface-variant: #444746; /* Text phụ */
+            
+            --md-sys-color-primary: #0b57d0; 
+            --md-sys-color-primary-container: #d3e3fd; 
+            --md-sys-color-on-primary-container: #041e49; 
+            
+            --md-sys-color-outline-variant: #e0e2e0; 
+        }
+
+        /* --- Chế độ Tối (Dark Mode) - Tự động nhận diện --- */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Màu xám đậm chuẩn Google (không phải đen) */
+                --md-sys-color-background: #1a1c1e; 
+                --md-sys-color-surface: #202124; /* Nền Card xám nhạt hơn nền body 1 chút */
+                --md-sys-color-surface-container: #282a2d; 
+                --md-sys-color-on-surface: #e3e3e3; 
+                --md-sys-color-on-surface-variant: #9aa0a6; 
+                --md-sys-color-primary: #8ab4f8; 
+                --md-sys-color-primary-container: #004a77; 
+                --md-sys-color-on-primary-container: #c2e7ff; 
+                --md-sys-color-outline-variant: #3c4043;
+            }
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Be Vietnam Pro', 'Google Sans', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 0%, #1a1c35 0%, #0b0c1e 80%);
-            color: var(--text-main);
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 32px 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 460px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 20px; 
         }
 
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+        /* =========================================
+           HIỆU ỨNG VIỀN GOOGLE AI (CHUẨN VIDEO)
+           ========================================= */
+        .ai-border-wrapper {
+            position: relative;
+            border-radius: 30px; /* Góc bo lớn bên ngoài */
+            padding: 2px; /* ĐỘ DÀY CỦA VIỀN AI */
+            overflow: hidden; /* Cắt phần ánh sáng thừa ở góc */
+            z-index: 1;
+        }
+
+        /* Lớp ánh sáng gradient 4 màu Google quay tròn */
+        .ai-border-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%; 
+            height: 300%; 
+            /* Gradient 4 màu đặc trưng: Xanh - Đỏ - Vàng - Xanh Lá */
+            background: conic-gradient(
+                #4285f4, #ea4335, #fbbc05, #34a853, #4285f4
+            );
+            transform: translate(-50%, -50%);
+            animation: spin-ai-border 4s linear infinite;
+            z-index: -1;
+            filter: blur(2px); /* Làm mượt dải màu giống hệt nút Google */
+        }
+
+        @keyframes spin-ai-border {
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* --- Nội dung chính của Thẻ (Che phần giữa lại, chỉ để lộ viền) --- */
+        .m3-card {
+            background: var(--md-sys-color-surface);
+            border-radius: 27px; /* Khớp với góc bo vỏ bọc */
             padding: 24px;
             text-align: center;
+            height: 100%;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.3s ease;
         }
 
         /* --- Profile Section --- */
-        .profile .avatar {
+        .avatar-container {
             width: 100px;
             height: 100px;
+            margin: 0 auto 16px;
+        }
+
+        .profile .avatar {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--glass-border);
-            margin-bottom: 15px;
+            border: 2px solid var(--md-sys-color-outline-variant);
         }
 
         .profile h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--md-sys-color-on-surface);
         }
 
-        .profile .highlight-text {
-            color: var(--accent); /* Màu xanh ngọc nổi bật */
-            font-size: 1.2rem;
-            font-weight: 700;
-            font-style: normal; /* Không in nghiêng */
-            margin-top: 10px;
+        .profile .zalo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 6px 16px;
+            border-radius: 100px; 
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .zalo-badge i {
+            color: var(--md-sys-color-primary);
         }
 
         .section-title {
             text-align: left;
             font-size: 1.1rem;
-            margin-bottom: 15px;
-            margin-top: 10px;
-            font-weight: 600;
-            color: var(--text-main);
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 16px;
+            padding-left: 4px;
         }
 
         /* --- Custom Links Section --- */
-        .custom-link-btn {
+        .links-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .m3-list-item {
             display: flex;
             align-items: center;
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 16px;
+            padding: 12px 16px;
+            background: var(--md-sys-color-surface); 
+            border: 1px solid var(--md-sys-color-outline-variant); 
+            border-radius: 20px;
             text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease;
         }
 
-        .custom-link-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
+        .m3-list-item:hover {
+            background-color: var(--md-sys-color-surface-container);
         }
 
         .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px; 
+            width: 44px;
+            height: 44px;
+            border-radius: 50%; 
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 1.3rem;
-            margin-right: 15px;
+            font-size: 1.2rem;
+            margin-right: 16px;
+            flex-shrink: 0;
+            background-color: var(--md-sys-color-surface-container); 
         }
 
-        .fb-color { background-color: var(--fb-color); }
-        .web-color { background-color: var(--accent); }
+        /* Icon Facebook màu chuẩn */
+        .fb-icon { color: #1877f2; } 
+        .web-icon { color: var(--md-sys-color-primary); }
 
         .link-title {
             flex-grow: 1;
-            color: var(--text-main);
-            font-size: 1.05rem;
-            font-weight: 600;
+            color: var(--md-sys-color-on-surface);
+            font-size: 1rem;
+            font-weight: 500;
             text-align: left;
         }
 
         .arrow {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-right: 10px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 1rem;
         }
 
         /* --- Bank Section --- */
-        .bank-info {
+        .bank-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            background: var(--md-sys-color-surface-container); 
+            padding: 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
             text-align: left;
         }
 
         .bank-details {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
         .bank-logo {
-            width: 45px;
-            height: 45px;
-            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             object-fit: contain;
-            background: #fff;
-            padding: 2px;
+            background: #ffffff; /* Nền logo trắng nguyên bản */
+            padding: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .bank-text div:first-child {
-            color: var(--text-muted);
+            color: var(--md-sys-color-on-surface-variant);
             font-size: 0.85rem;
-            margin-bottom: 4px;
+            font-weight: 400;
         }
 
         .bank-text .acc-number {
-            font-size: 1.1rem;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin: 2px 0;
+            letter-spacing: 0.5px;
         }
 
         .bank-text .acc-name {
             font-size: 0.85rem;
-            margin-top: 4px;
+            color: var(--md-sys-color-on-surface-variant);
             text-transform: uppercase;
         }
 
         .copy-btn {
-            background: var(--accent);
-            color: #fff;
+            background: transparent;
+            color: var(--md-sys-color-primary);
             border: none;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
+            transition: background-color 0.2s;
+            font-size: 1.25rem;
         }
 
         .copy-btn:hover {
-            opacity: 0.8;
+            background-color: var(--md-sys-color-primary-container); 
         }
 
         /* --- QR Section --- */
         .qr-section {
-            margin-top: 15px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+            padding-top: 24px;
+            margin-top: 8px;
         }
 
         .qr-header {
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
         }
 
         .qr-image {
             width: 100%;
-            max-width: 250px;
-            border-radius: 12px;
-            margin: 10px 0;
-            border: 2px solid var(--glass-border);
+            max-width: 200px;
+            border-radius: 16px;
+            margin: 0 auto 16px;
+            border: 2px solid #ffffff; 
+            background-color: #ffffff; /* Nền QR luôn trắng để máy dễ quét */
+            display: block;
         }
 
         .qr-instruction {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--md-sys-color-on-surface-variant);
+            font-weight: 400;
         }
 
-        /* --- Toast Notification --- */
+        /* --- Snackbar --- */
         #toast {
             visibility: hidden;
-            min-width: 250px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 12px;
+            min-width: 300px;
+            background: #313033;
+            color: #f4eff4;
+            text-align: left;
+            border-radius: 4px;
+            padding: 14px 24px;
             position: fixed;
-            z-index: 1;
-            bottom: 30px;
+            z-index: 99;
+            bottom: 24px;
             left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.9rem;
+            transform: translateX(-50%) translateY(20px);
+            font-size: 0.875rem;
             opacity: 0;
-            transition: opacity 0.3s, bottom 0.3s;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
         }
 
         #toast.show {
             visibility: visible;
             opacity: 1;
-            bottom: 50px;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        #toast .toast-action {
+            color: #d0bcff;
+            font-weight: 500;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            margin-left: 16px;
         }
 
         footer {
             text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: 20px;
-            padding-bottom: 20px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 0.85rem;
+            padding: 16px 0;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="glass-panel profile">
-            <img src="avatar.jpg" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/100'">
-            <h1>Baraboy 2k10</h1>
-            <p class="highlight-text">Zalo: 0965.25.6969</p>
-        </div>
-
-        <div class="glass-panel">
-            <h2 class="section-title">LIÊN KẾT CHÍNH</h2>
-            
-            <a href="https://www.facebook.com/tran.inh.tu.720066/" class="custom-link-btn" target="_blank">
-                <div class="icon-box fb-color">
-                    <i class="fa-brands fa-facebook-f"></i>
+        <div class="ai-border-wrapper">
+            <div class="m3-card profile">
+                <div class="avatar-container">
+                    <img src="avatar.jpg" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/100'">
                 </div>
-                <span class="link-title">Facebook Cá Nhân</span>
-                <i class="fa-solid fa-chevron-right arrow"></i>
-            </a>
-
-            <a href="https://baraboyshop.com/" class="custom-link-btn" target="_blank">
-                <div class="icon-box web-color">
-                    <i class="fa-solid fa-globe"></i>
+                <h1>Baraboy 2k10</h1>
+                <div class="zalo-badge">
+                    <i class="fa-solid fa-phone"></i>
+                    Zalo: 0965.25.6969
                 </div>
-                <span class="link-title">Web Acc</span>
-                <i class="fa-solid fa-chevron-right arrow"></i>
-            </a>
-        </div>
-
-        <div class="glass-panel">
-            <h2 class="section-title">Thông tin chuyển khoản</h2>
-            
-            <div class="bank-info">
-                <div class="bank-details">
-                    <img src="bank.png" alt="MB Bank" class="bank-logo" onerror="this.src='https://via.placeholder.com/45'">
-                    <div class="bank-text">
-                        <div>Ngân hàng Quân Đội (MB)</div>
-                        <div class="acc-number" id="acc-number">44446668386</div>
-                        <div class="acc-name">TRAN DINH TU</div>
-                    </div>
-                </div>
-                <button class="copy-btn" onclick="copySTK()" title="Sao chép số tài khoản">
-                    <i class="fa-regular fa-copy"></i>
-                </button>
             </div>
+        </div>
 
-            <div class="qr-section">
-                <div class="qr-header">Google đọc</div>
-                <img src="wescan.png" alt="WESCAN QR Code" class="qr-image" onerror="this.src='https://via.placeholder.com/250'">
-                <div class="qr-instruction">WESCAN.vn/BARABOY</div>
+        <div class="ai-border-wrapper">
+            <div class="m3-card">
+                <h2 class="section-title">Liên kết</h2>
+                <div class="links-group">
+                    <a href="https://www.facebook.com/tran.inh.tu.720066/" class="m3-list-item" target="_blank">
+                        <div class="icon-box">
+                            <i class="fa-brands fa-facebook fb-icon"></i> </div>
+                        <span class="link-title">Facebook Cá Nhân</span>
+                        <i class="fa-solid fa-chevron-right arrow"></i>
+                    </a>
+
+                    <a href="https://baraboyshop.com/" class="m3-list-item" target="_blank">
+                        <div class="icon-box">
+                            <i class="fa-solid fa-globe web-icon"></i>
+                        </div>
+                        <span class="link-title">Web Acc</span>
+                        <i class="fa-solid fa-chevron-right arrow"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-border-wrapper">
+            <div class="m3-card">
+                <h2 class="section-title">Thanh toán</h2>
+                
+                <div class="bank-card">
+                    <div class="bank-details">
+                        <img src="bank.png" alt="MB Bank" class="bank-logo" onerror="this.src='https://via.placeholder.com/44'">
+                        <div class="bank-text">
+                            <div>Ngân hàng Quân Đội (MB)</div>
+                            <div class="acc-number" id="acc-number">44446668386</div>
+                            <div class="acc-name">TRAN DINH TU</div>
+                        </div>
+                    </div>
+                    <button class="copy-btn" onclick="copySTK()" title="Sao chép số tài khoản">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+
+                <div class="qr-section">
+                    <div class="qr-header">Google đọc</div>
+                    <img src="wescan.png" alt="WESCAN QR Code" class="qr-image" onerror="this.src='https://via.placeholder.com/200'">
+                    <div class="qr-instruction">WESCAN.vn/BARABOY</div>
+                </div>
             </div>
         </div>
 
         <footer>
-            © 2026 Baraboy 2k10.
+            © 2026 Baraboy 2k10
         </footer>
     </div>
 
-    <div id="toast"><i class="fa-solid fa-check-circle" style="color: #4cd137; margin-right: 8px;"></i>Đã sao chép số tài khoản!</div>
+    <div id="toast">
+        <span>Đã sao chép vào khay nhớ tạm.</span>
+        <span class="toast-action" onclick="document.getElementById('toast').className = ''">ĐÓNG</span>
+    </div>
 
     <script>
+        var toastTimeout;
         function copySTK() {
             var stk = document.getElementById("acc-number").innerText;
             navigator.clipboard.writeText(stk).then(function() {
                 var toast = document.getElementById("toast");
                 toast.className = "show";
-                setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+                
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000); 
             }, function(err) {
                 console.error('Không thể sao chép: ', err);
             });
